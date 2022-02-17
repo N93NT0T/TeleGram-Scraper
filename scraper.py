@@ -1,6 +1,7 @@
-from telethon.sync import TelegramClient
+from telethon import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty
+
 import os, sys
 import configparser
 import csv
@@ -20,32 +21,26 @@ def banner():
 youtube.com/channel/UCnknCgg_3pVXS27ThLpw3xQ
         """)
 
-cpass = configparser.RawConfigParser()
-cpass.read('config.data')
+if os.path.isfile('N93NT0T_log.txt'):
+    with open('N93NT0T_log.txt', 'r') as r:
+        data = r.readlines()
+    api_id = data[0]
+    api_hash = data[1]
 
-try:
-    api_id = cpass['cred']['id']
-    api_hash = cpass['cred']['hash']
-    phone = cpass['cred']['phone']
-    client = TelegramClient(phone, api_id, api_hash)
-except KeyError:
-    os.system('clear')
-    banner()
-    print(re+"[!] run python3 setup.py first !!\n")
-    sys.exit(1)
+else:
+    api_id = input('Enter api_id: ')
+    api_hash = input('Enter api_hash: ')
+    with open('N93NT0T_log.txt', 'w') as a:
+        a.write(api_id + '\n' + api_hash)
 
-client.connect()
-if not client.is_user_authorized():
-    client.send_code_request(phone)
-    os.system('clear')
-    banner()
-    client.sign_in(phone, input(gr+'[+] Enter the code: '+re))
- 
+client = TelegramClient('N93NT0T', api_id, api_hash)
+
+async def main():
 os.system('clear')
 banner()
 chats = []
 last_date = None
-chunk_size = 200
+chunk_size = 2000
 groups=[]
  
 result = client(GetDialogsRequest(
@@ -81,7 +76,7 @@ all_participants = client.get_participants(target_group, aggressive=True)
  
 print(gr+'[+] Saving In file...')
 time.sleep(1)
-with open("members.csv","w",encoding='UTF-8') as f:
+with open(group.title + ".csv","w",encoding='UTF-8') as f:
     writer = csv.writer(f,delimiter=",",lineterminator="\n")
     writer.writerow(['username','user id', 'access hash','name','group', 'group id'])
     for user in all_participants:
