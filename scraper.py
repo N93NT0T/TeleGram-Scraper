@@ -35,9 +35,9 @@ else:
 
 client = TelegramClient('N93NT0T', api_id, api_hash)
 
+
+
 async def main():
-os.system('clear')
-banner()
 chats = []
 last_date = None
 chunk_size = 2000
